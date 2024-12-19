@@ -52,10 +52,22 @@ const App = () => {
     }
   };
 
-  
+  const handleFetchLatex = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/generate-latex', {
+        responseType: 'text',
+      });
+
+      setLatexCode(response.data);
+    } catch (error) {
+      console.error('Error fetching LaTeX:', error);
+      setErrorMessage('An error occurred while fetching LaTeX data. Please try again.');
+    }
+  };
+
   const handleDownloadClassFile = () => {
-    const googleDriveLink = "https://drive.google.com/file/d/1jExUoDlZ2A6NQse4PLF8mT4gfHY8cQFZ/view?usp=sharing"; // Replace with your actual link
-    window.open(googleDriveLink, "_blank");
+    const googleDriveLink = 'https://drive.google.com/file/d/1jExUoDlZ2A6NQse4PLF8mT4gfHY8cQFZ/view?usp=sharing';
+    window.open(googleDriveLink, '_blank');
   };
 
   return (
@@ -167,6 +179,10 @@ const App = () => {
 
       <button onClick={handleGenerateLatex} style={{ padding: '10px 20px', marginBottom: '20px' }}>
         Generate LaTeX
+      </button>
+
+      <button onClick={handleFetchLatex} style={{ padding: '10px 20px', marginBottom: '20px' }}>
+        Fetch LaTeX
       </button>
 
       <button onClick={handleDownloadClassFile} style={{ padding: '10px 20px', marginBottom: '20px' }}>

@@ -2,27 +2,47 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const App = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [linkedin, setLinkedin] = useState('');
+  const [linkedinusrn, setLinkedinusrn] = useState('');
   const [portfolio, setPortfolio] = useState('');
+  const [codingProfile, setCodingProfile] = useState('');
+  const [codingProfileplatname, setCodingProfileplatname] = useState('');
+  const [github, setGithub] = useState('');
+  const [githubusrn, setGithubusrn] = useState('');
   const [objective, setObjective] = useState('');
-  const [education, setEducation] = useState('');
-  const [skills, setSkills] = useState('');
-  const [experience, setExperience] = useState('');
-  const [projects, setProjects] = useState('');
-  const [extraCurricular, setExtraCurricular] = useState('');
-  const [leadership, setLeadership] = useState('');
+  const [education, setEducation] = useState(['']);
+  const [skills, setSkills] = useState(['']);
+  const [experience, setExperience] = useState(['']);
+  const [projects, setProjects] = useState(['']);
+  const [extraCurricular, setExtraCurricular] = useState(['']);
+  const [leadership, setLeadership] = useState(['']);
   const [latexCode, setLatexCode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const handleAddField = (setter, array) => {
+    setter([...array, '']);
+  };
+
+  const handleRemoveField = (setter, array, index) => {
+    const updatedArray = [...array];
+    updatedArray.splice(index, 1);
+    setter(updatedArray);
+  };
+
+  const handleChangeField = (setter, array, index, value) => {
+    const updatedArray = [...array];
+    updatedArray[index] = value;
+    setter(updatedArray);
+  };
+
   const handleGenerateLatex = async () => {
-    if (!name || !objective || !education || !phone || !email) {
-      setErrorMessage(
-        'Please fill in all required fields: Name, Objective, Education, Phone, and Email.'
-      );
+    if (!firstName || !lastName || !phone || !email) {
+      setErrorMessage('Please fill in all required fields: First Name, Last Name, Phone, and Email.');
       return;
     }
 
@@ -30,12 +50,18 @@ const App = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/users', {
-        name,
+        firstName,
+        lastName,
         phone,
-        address,
         email,
+        address,
         linkedin,
+        linkedinusrn,
         portfolio,
+        codingProfile,
+        codingProfileplatname,
+        github,
+        githubusrn,
         objective,
         education,
         skills,
@@ -92,9 +118,16 @@ const App = () => {
       <div style={{ marginBottom: '20px' }}>
         <input
           type="text"
-          placeholder="Name (Required)"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="First Name (Required)"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <input
+          type="text"
+          placeholder="Last Name (Required)"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
         <input
@@ -102,13 +135,6 @@ const App = () => {
           placeholder="Phone (Required)"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          style={{ marginRight: '10px', padding: '5px' }}
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
         <input
@@ -120,7 +146,22 @@ const App = () => {
         />
         <input
           type="text"
-          placeholder="LinkedIn"
+          placeholder="City,State"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        
+         <input
+          type="text"
+          placeholder="LinkedInusername"
+          value={linkedinusrn}
+          onChange={(e) => setLinkedinusrn(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <input
+          type="text"
+          placeholder="LinkedIn Link"
           value={linkedin}
           onChange={(e) => setLinkedin(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
@@ -132,59 +173,77 @@ const App = () => {
           onChange={(e) => setPortfolio(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
+        
+        <input
+          type="text"
+          placeholder="Coding Platformname"
+          value={codingProfileplatname}
+          onChange={(e) => setCodingProfileplatname(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <input
+          type="text"
+          placeholder="Coding Profile Link"
+          value={codingProfile}
+          onChange={(e) => setCodingProfile(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+         <input
+          type="text"
+          placeholder="GitHub username"
+          value={githubusrn}
+          onChange={(e) => setGithubusrn(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <input
+          type="text"
+          placeholder="GitHub Link"
+          value={github}
+          onChange={(e) => setGithub(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
       </div>
 
       <textarea
-        placeholder="Objective (Required)"
+        placeholder="Objective"
         value={objective}
         onChange={(e) => setObjective(e.target.value)}
         style={{ width: '100%', height: '50px', marginBottom: '10px' }}
       ></textarea>
-      <textarea
-        placeholder="Education (Required)"
-        value={education}
-        onChange={(e) => setEducation(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
-      <textarea
-        placeholder="Skills"
-        value={skills}
-        onChange={(e) => setSkills(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
-      <textarea
-        placeholder="Experience"
-        value={experience}
-        onChange={(e) => setExperience(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
-      <textarea
-        placeholder="Projects"
-        value={projects}
-        onChange={(e) => setProjects(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
-      <textarea
-        placeholder="Extra-Curricular Activities"
-        value={extraCurricular}
-        onChange={(e) => setExtraCurricular(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
-      <textarea
-        placeholder="Leadership"
-        value={leadership}
-        onChange={(e) => setLeadership(e.target.value)}
-        style={{ width: '100%', height: '50px', marginBottom: '10px' }}
-      ></textarea>
+
+      {[{ label: 'Education', state: education, setter: setEducation },
+        { label: 'Skills', state: skills, setter: setSkills },
+        { label: 'Experience', state: experience, setter: setExperience },
+        { label: 'Projects', state: projects, setter: setProjects },
+        { label: 'Extra-Curricular Activities', state: extraCurricular, setter: setExtraCurricular },
+        { label: 'Leadership', state: leadership, setter: setLeadership },
+      ].map(({ label, state, setter }) => (
+        <div key={label} style={{ marginBottom: '20px' }}>
+          <h3>{label}</h3>
+          {state.map((value, index) => (
+            <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+              <textarea
+                value={value}
+                onChange={(e) => handleChangeField(setter, state, index, e.target.value)}
+                style={{ width: '100%', height: '50px', marginRight: '10px' }}
+              />
+              <button onClick={() => handleRemoveField(setter, state, index)} style={{ padding: '5px 10px' }}>
+                Remove
+              </button>
+            </div>
+          ))}
+          <button onClick={() => handleAddField(setter, state)} style={{ padding: '5px 10px' }}>
+            Add {label}
+          </button>
+        </div>
+      ))}
 
       <button onClick={handleGenerateLatex} style={{ padding: '10px 20px', marginBottom: '20px' }}>
         Generate LaTeX
       </button>
-
       <button onClick={handleFetchLatex} style={{ padding: '10px 20px', marginBottom: '20px' }}>
         Fetch LaTeX
       </button>
-
       <button onClick={handleDownloadClassFile} style={{ padding: '10px 20px', marginBottom: '20px' }}>
         Download resume.cls
       </button>

@@ -25,11 +25,14 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   address: { type: String, default: "" },
   linkedin: { type: String, default: "" },
+  linkedinusrn: { type: String, default: "" },
   portfolio: { type: String, default: "" },
   codingProfile: { type: String, default: "" },
+  codingProfileplatname: { type: String, default: "" },
   github: { type: String, default: "" },
-  objective: { type: String, required: true },
-  education: { type: [String], required: true },
+  githubusrn: { type: String, default: "" },
+  objective: { type: String, default: "" },
+  education: { type: [String], default: "" },
   skills: { type: [String], default: [] },
   experience: { type: [String], default: [] },
   projects: { type: [String], default: [] },
@@ -88,41 +91,42 @@ app.get("/generate-latex", async (req, res) => {
 \\name{${user.firstName} ${user.lastName}}
 \\address{${user.phone}${user.address ? ` \\\\ ${escapeLatex(user.address)}` : ""}}
 \\address{\\href{mailto:${user.email}}{${user.email}}${
-      user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{LinkedIn}` : ""
+      user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${user.linkedinusrn}}` : ""
     }${
-      user.github ? ` \\href{${escapeLatex(user.github)}}{GitHub}` : ""
+      user.github ? ` \\href{${escapeLatex(user.github)}}{${user.githubusrn}}` : ""
     }${
-      user.codingProfile ? ` \\href{${escapeLatex(user.codingProfile)}}{Coding Profile}` : ""
+      user.codingProfile ? ` \\href{${escapeLatex(user.codingProfile)}}{${user.codingProfileplatname}}` : ""
     }${
       user.portfolio ? ` \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
     }}
 \\begin{document}
 
-\\begin{rSection}{Objective}
+${user.objective!=""? `\\begin{rSection}{Objective}
 ${escapeLatex(user.objective)}
-\\end{rSection}
+\\end{rSection}`:""}
 
-\\begin{rSection}{Education}
+${user.education.length > 0 && user.education[0]!=""? `\\begin{rSection}{Education}
 ${user.education.map((ed) => `${escapeLatex(ed)} \\\\`).join("")}
-\\end{rSection}
+\\end{rSection}`:""}
 
-${user.skills.length > 0 ? `\\begin{rSection}{Skills}
+
+${user.skills.length > 0 && user.skills[0]!="" ? `\\begin{rSection}{Skills}
 ${escapeLatex(user.skills.join(", "))}
 \\end{rSection}` : ""}
 
-${user.experience.length > 0 ? `\\begin{rSection}{Experience}
+${user.experience.length > 0 && user.experience[0]!=""? `\\begin{rSection}{Experience}
 ${user.experience.map((exp) => `\\item ${escapeLatex(exp)}`).join("\n")}
 \\end{rSection}` : ""}
 
-${user.projects.length > 0 ? `\\begin{rSection}{Projects}
+${user.projects.length > 0 && user.projects[0]!="" ? `\\begin{rSection}{Projects}
 ${user.projects.map((proj) => `\\item ${escapeLatex(proj)}`).join("\n")}
 \\end{rSection}` : ""}
 
-${user.extraCurricular.length > 0 ? `\\begin{rSection}{Extra-Curricular Activities}
+${user.extraCurricular.length > 0 && user.extraCurricular[0]!=""? `\\begin{rSection}{Extra-Curricular Activities}
 ${user.extraCurricular.map((activity) => `\\item ${escapeLatex(activity)}`).join("\n")}
 \\end{rSection}` : ""}
 
-${user.leadership.length > 0 ? `\\begin{rSection}{Leadership}
+${user.leadership.length > 0 && user.leadership[0]!=""? `\\begin{rSection}{Leadership}
 ${user.leadership.map((lead) => `\\item ${escapeLatex(lead)}`).join("\n")}
 \\end{rSection}` : ""}
 

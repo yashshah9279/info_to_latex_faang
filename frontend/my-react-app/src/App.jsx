@@ -8,9 +8,12 @@ const App = () => {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [linkedin, setLinkedin] = useState('');
+  const [linkedinusrn, setLinkedinusrn] = useState('');
   const [portfolio, setPortfolio] = useState('');
   const [codingProfile, setCodingProfile] = useState('');
+  const [codingProfileplatname, setCodingProfileplatname] = useState('');
   const [github, setGithub] = useState('');
+  const [githubusrn, setGithubusrn] = useState('');
   const [objective, setObjective] = useState('');
   const [education, setEducation] = useState(['']);
   const [skills, setSkills] = useState(['']);
@@ -53,9 +56,12 @@ const App = () => {
         email,
         address,
         linkedin,
+        linkedinusrn,
         portfolio,
         codingProfile,
+        codingProfileplatname,
         github,
+        githubusrn,
         objective,
         education,
         skills,
@@ -140,14 +146,22 @@ const App = () => {
         />
         <input
           type="text"
-          placeholder="Address"
+          placeholder="City,State"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
+        
+         <input
+          type="text"
+          placeholder="LinkedInusername"
+          value={linkedinusrn}
+          onChange={(e) => setLinkedinusrn(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
         <input
           type="text"
-          placeholder="LinkedIn"
+          placeholder="LinkedIn Link"
           value={linkedin}
           onChange={(e) => setLinkedin(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
@@ -159,11 +173,26 @@ const App = () => {
           onChange={(e) => setPortfolio(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
+        
         <input
           type="text"
-          placeholder="Coding Profile"
+          placeholder="Coding Platformname"
+          value={codingProfileplatname}
+          onChange={(e) => setCodingProfileplatname(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+        <input
+          type="text"
+          placeholder="Coding Profile Link"
           value={codingProfile}
           onChange={(e) => setCodingProfile(e.target.value)}
+          style={{ marginRight: '10px', padding: '5px' }}
+        />
+         <input
+          type="text"
+          placeholder="GitHub username"
+          value={githubusrn}
+          onChange={(e) => setGithubusrn(e.target.value)}
           style={{ marginRight: '10px', padding: '5px' }}
         />
         <input

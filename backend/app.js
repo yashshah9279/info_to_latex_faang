@@ -45,18 +45,23 @@ const userSchema = new mongoose.Schema({
       CGPA: { type: String, default: "" },
     },
   ],
-  skills: [String],
+  skills: [
+    {
+      category: { type: String, required: true },
+      skills: { type: String, required: true }, // Comma-separated skills
+    },
+  ],
   experience: [
     {
-      position: { type: String, required: true },
-      company: { type: String, required: true },
-      duration: { type: String, required: true },
+      roleName: { type: String, required: true },
+      companyName: { type: String, required: true },
+      duration: { type: String},
       details: { type: [String], default: [] },
     },
   ],
   projects: [
     {
-      name: { type: String, required: true },
+      title: { type: String, required: true },
       description: { type: String, required: true },
       techStack: { type: [String], default: [] },
       link: { type: String, default: "" },
@@ -83,7 +88,7 @@ app.post("/users", async (req, res) => {
     res.status(201).json({ message: "User created successfully.", user: savedUser });
   } catch (error) {
     console.error("Error creating user:", error);
-    res.status(500).json({ error: "Error creating user." });
+    res.status(400).json({ error: error.message });
   }
 });
 
@@ -98,46 +103,94 @@ app.get("/generate-latex", async (req, res) => {
     const user = users[0];
     const escapeLatex = (str) =>
       str
-        .replace(/_/g, "\\_")
-        .replace(/&/g, "\\&")
-        .replace(/%/g, "\\%")
-        .replace(/#/g, "\\#")
-        .replace(/\$/g, "\\$")
-        .replace(/\{/g, "\\{")
-        .replace(/\}/g, "\\}");
+        ? str
+            .replace(/_/g, "\\_")
+            .replace(/&/g, "\\&")
+            .replace(/%/g, "\\%")
+            .replace(/#/g, "\\#")
+            .replace(/\$/g, "\\$")
+            .replace(/\{/g, "\\{")
+            .replace(/\}/g, "\\}")
+        : "";
 
-    const latexContent = `
+        const latexContent = `
 \\documentclass{resume}
 \\usepackage[left=0.4in, top=0.4in, right=0.4in, bottom=0.4in]{geometry}
-\\name{${user.firstName} ${user.lastName}}
-\\address{${user.phone}${user.address ? ` \\\\ ${escapeLatex(user.address)}` : ""}}
-\\address{\\href{mailto:${user.email}}{${user.email}}${
-      user.linkedin ? ` \\\\ \\\href{${escapeLatex(user.linkedin)}}{${user.linkedinusrn}}` : ""
-    }${
-      user.github ? ` \\\href{${escapeLatex(user.github)}}{${user.githubusrn}}` : ""
-    }${
-      user.codingProfile ? ` \\\href{${escapeLatex(user.codingProfile)}}{${user.codingProfileplatname}}` : ""
-    }${
-      user.portfolio ? ` \\\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
-    }}
+\\name{${escapeLatex(user.firstName)} ${escapeLatex(user.lastName)}}
+\\address{${escapeLatex(user.phone)}${user.address ? ` \\\\ ${escapeLatex(user.address)}` : ""}}
+\\address{\\href{mailto:${escapeLatex(user.email)}}{${escapeLatex(user.email)}}${
+  user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${escapeLatex(user.linkedinusrn || "LinkedIn Profile")}}` : ""
+}${
+  user.github ? ` \\\\ \\href{${escapeLatex(user.github)}}{${escapeLatex(user.githubusrn || "GitHub Profile")}}` : ""
+}${
+  user.portfolio ? ` \\\\ \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
+}}
 
 \\begin{document}
 
-${user.objective ? `\\begin{rSection}{Objective}\n${escapeLatex(user.objective)}\n\\end{rSection}` : ""}
+${user.objective && user.objective !== "" ? `
+\\begin{rSection}{Objective}
+${escapeLatex(user.objective)}
+\\end{rSection}` : ""}
 
-${user.education.length > 0 ? `\\begin{rSection}{Education}\n${user.education.map((ed) => `${escapeLatex(ed.degree)} at ${escapeLatex(ed.institution)} (${escapeLatex(ed.year)})\\\\`).join("\n")}\n\\end{rSection}` : ""}
+${user.education && user.education.length > 0 ? `
+\\begin{rSection}{Education}
+${user.education.map((ed) => `
+\\textbf{${escapeLatex(ed.degree)}} \\\\
+${escapeLatex(ed.institution)} \\hfill ${escapeLatex(ed.year)} \\\\
+${ed.coursework && ed.coursework !== "" ? `Relevant Coursework: ${escapeLatex(ed.coursework)}\\\\` : ""}
+${ed.CGPA && ed.CGPA !== "" ? `CGPA: ${escapeLatex(ed.CGPA)}\\\\` : ""}`).join("\n")}
+\\end{rSection}` : ""}
 
-${user.skills.length > 0 ? `\\begin{rSection}{Skills}\n${escapeLatex(user.skills.join(", "))}\n\\end{rSection}` : ""}
+${user.skills && user.skills.length > 0 ? `
+\\begin{rSection}{Skills}
+\\begin{tabular}{ @{} >{\\bfseries}l @{\hspace{6ex}} l }
+${user.skills.map((skill) => `
+${escapeLatex(skill.category)} & ${escapeLatex(skill.skills)} \\\\`).join("\n")}
+\\end{tabular}
+\\end{rSection}` : ""}
 
-${user.experience.length > 0 ? `\\begin{rSection}{Experience}\n${user.experience.map((exp) => `\\item ${escapeLatex(exp.position)} at ${escapeLatex(exp.company)} (${escapeLatex(exp.duration)})\n${exp.details.map((detail) => `- ${escapeLatex(detail)}`).join("\n")}`).join("\n")}\n\\end{rSection}` : ""}
+${user.experience && user.experience.length > 0 ? `
+\\begin{rSection}{Experience}
+${user.experience.map((exp) => `
+\\textbf{${escapeLatex(exp.roleName)}} ${exp.duration && exp.duration !== "" ? `\\hfill ${escapeLatex(exp.duration)}` : ""} \\\\
+${escapeLatex(exp.companyName)} \\\\
+\\begin{itemize}
+${exp.details && exp.details.length > 0 ? exp.details.map((detail) => `
+\\item ${escapeLatex(detail)}`).join("\n") : ""}
+\\end{itemize}`).join("\n")}
+\\end{rSection}` : ""}
 
-${user.projects.length > 0 ? `\\begin{rSection}{Projects}\n${user.projects.map((proj) => `\\item ${escapeLatex(proj.name)} - ${escapeLatex(proj.description)}\nTech Stack: ${escapeLatex(proj.techStack.join(", "))}\n${proj.link ? `Link: \\\href{${proj.link}}{Project Link}` : ""}`).join("\n")}\n\\end{rSection}` : ""}
+${user.projects && user.projects.length > 0 ? `
+\\begin{rSection}{Projects}
+\\begin{itemize}
+${user.projects.map((proj) => `
+\\item \\textbf{${escapeLatex(proj.title)}}: ${escapeLatex(proj.description)}\\\\
+${proj.techStack && proj.techStack.length > 0 ? `Tech Stack: ${escapeLatex(proj.techStack.join(", "))}\\\\` : ""}
+${proj.link && proj.link !== "" ? `\\href{${escapeLatex(proj.link)}}{Project Link}` : ""}`).join("\n")}
+\\end{itemize}
+\\end{rSection}` : ""}
 
-${user.extraCurricular.length > 0 ? `\\begin{rSection}{Extra-Curricular Activities}\n${user.extraCurricular.map((activity) => `\\item ${escapeLatex(activity)}`).join("\n")}\n\\end{rSection}` : ""}
+${user.extraCurricular && user.extraCurricular.length > 0 ? `
+\\begin{rSection}{Extra-Curricular Activities}
+\\begin{itemize}
+${user.extraCurricular.map((activity) => `
+\\item ${escapeLatex(activity)}`).join("\n")}
+\\end{itemize}
+\\end{rSection}` : ""}
 
-${user.leadership.length > 0 ? `\\begin{rSection}{Leadership}\n${user.leadership.map((lead) => `\\item ${escapeLatex(lead)}`).join("\n")}\n\\end{rSection}` : ""}
+${user.leadership && user.leadership.length > 0 ? `
+\\begin{rSection}{Leadership}
+\\begin{itemize}
+${user.leadership.map((lead) => `
+\\item ${escapeLatex(lead)}`).join("\n")}
+\\end{itemize}
+\\end{rSection}` : ""}
 
 \\end{document}`;
+
+
+        
 
     deleteAllData();
     res.setHeader("Content-Type", "application/x-tex");

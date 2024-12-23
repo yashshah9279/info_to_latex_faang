@@ -144,7 +144,7 @@ ${ed.CGPA && ed.CGPA !== "" ? `CGPA: ${escapeLatex(ed.CGPA)}\\\\` : ""}`).join("
 
 ${user.skills && user.skills.length > 0 ? `
 \\begin{rSection}{Skills}
-\\begin{tabular}{ @{} >{\\bfseries}l @{\hspace{6ex}} l }
+\\begin{tabular}{ @{} >{\\bfseries}l @{\\hspace{6ex}} l }
 ${user.skills.map((skill) => `
 ${escapeLatex(skill.category)} & ${escapeLatex(skill.skills)} \\\\`).join("\n")}
 \\end{tabular}

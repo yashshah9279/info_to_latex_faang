@@ -55,19 +55,18 @@ const userSchema = new mongoose.Schema({
     {
       roleName: { type: String, required: true },
       companyName: { type: String, required: true },
-      duration: { type: String},
+      duration: { type: String },
       details: { type: [String], default: [] },
     },
   ],
   projects: [
     {
       title: { type: String, required: true },
-      description: { type: String, required: true },
-      techStack: { type: [String], default: [] },
+      description: { type: [String], default: [''] }, // Array of strings for bullet points
       link: { type: String, default: "" },
     },
   ],
-  extraCurricular: [String],
+  activities: [String],
   leadership: [String],
 });
 
@@ -113,18 +112,18 @@ app.get("/generate-latex", async (req, res) => {
             .replace(/\}/g, "\\}")
         : "";
 
-        const latexContent = `
+    const latexContent = `
 \\documentclass{resume}
 \\usepackage[left=0.4in, top=0.4in, right=0.4in, bottom=0.4in]{geometry}
 \\name{${escapeLatex(user.firstName)} ${escapeLatex(user.lastName)}}
 \\address{${escapeLatex(user.phone)}${user.address ? ` \\\\ ${escapeLatex(user.address)}` : ""}}
 \\address{\\href{mailto:${escapeLatex(user.email)}}{${escapeLatex(user.email)}}${
-  user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${escapeLatex(user.linkedinusrn || "LinkedIn Profile")}}` : ""
-}${
-  user.github ? ` \\\\ \\href{${escapeLatex(user.github)}}{${escapeLatex(user.githubusrn || "GitHub Profile")}}` : ""
-}${
-  user.portfolio ? ` \\\\ \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
-}}
+      user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${escapeLatex(user.linkedinusrn || "LinkedIn Profile")}}` : ""
+    }${
+      user.github ? ` \\\\ \\href{${escapeLatex(user.github)}}{${escapeLatex(user.githubusrn || "GitHub Profile")}}` : ""
+    }${
+      user.portfolio ? ` \\\\ \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
+    }}
 
 \\begin{document}
 
@@ -142,14 +141,6 @@ ${ed.coursework && ed.coursework !== "" ? `Relevant Coursework: ${escapeLatex(ed
 ${ed.CGPA && ed.CGPA !== "" ? `CGPA: ${escapeLatex(ed.CGPA)}\\\\` : ""}`).join("\n")}
 \\end{rSection}` : ""}
 
-${user.skills && user.skills.length > 0 ? `
-\\begin{rSection}{Skills}
-\\begin{tabular}{ @{} >{\\bfseries}l @{\\hspace{6ex}} l }
-${user.skills.map((skill) => `
-${escapeLatex(skill.category)} & ${escapeLatex(skill.skills)} \\\\`).join("\n")}
-\\end{tabular}
-\\end{rSection}` : ""}
-
 ${user.experience && user.experience.length > 0 ? `
 \\begin{rSection}{Experience}
 ${user.experience.map((exp) => `
@@ -161,20 +152,32 @@ ${exp.details && exp.details.length > 0 ? exp.details.map((detail) => `
 \\end{itemize}`).join("\n")}
 \\end{rSection}` : ""}
 
+${user.skills && user.skills.length > 0 ? `
+\\begin{rSection}{Skills}
+\\begin{tabular}{ @{} >{\\bfseries}l @{\\hspace{6ex}} l }
+${user.skills.map((skill) => `
+${escapeLatex(skill.category)} & ${escapeLatex(skill.skills)} \\\\`).join("\n")}
+\\end{tabular}
+\\end{rSection}` : ""}
+
 ${user.projects && user.projects.length > 0 ? `
 \\begin{rSection}{Projects}
 \\begin{itemize}
 ${user.projects.map((proj) => `
-\\item \\textbf{${escapeLatex(proj.title)}}: ${escapeLatex(proj.description)}\\\\
-${proj.techStack && proj.techStack.length > 0 ? `Tech Stack: ${escapeLatex(proj.techStack.join(", "))}\\\\` : ""}
-${proj.link && proj.link !== "" ? `\\href{${escapeLatex(proj.link)}}{Project Link}` : ""}`).join("\n")}
+\\item \\textbf{${escapeLatex(proj.title)}}
+\\begin{itemize}
+${proj.description.map((desc) => `
+\\item ${escapeLatex(desc)}`).join("\n")}
+\\end{itemize}
+${proj.link && proj.link !== "" ? `\\\\ \\href{${escapeLatex(proj.link)}}{Project Link}` : ""}`).join("\n")}
 \\end{itemize}
 \\end{rSection}` : ""}
 
-${user.extraCurricular && user.extraCurricular.length > 0 ? `
-\\begin{rSection}{Extra-Curricular Activities}
+
+${user.activities && user.activities.length > 0 ? `
+\\begin{rSection}{Achievements}
 \\begin{itemize}
-${user.extraCurricular.map((activity) => `
+${user.activities.map((activity) => `
 \\item ${escapeLatex(activity)}`).join("\n")}
 \\end{itemize}
 \\end{rSection}` : ""}
@@ -188,9 +191,6 @@ ${user.leadership.map((lead) => `
 \\end{rSection}` : ""}
 
 \\end{document}`;
-
-
-        
 
     deleteAllData();
     res.setHeader("Content-Type", "application/x-tex");

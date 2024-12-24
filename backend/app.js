@@ -78,6 +78,13 @@ responsibilities: [
   ],
   activities: [String],
   leadership: [String],
+  certifications: [
+    {
+      name: { type: String, required: true },
+      validUntil: { type: String, default: ""},
+      link: { type: String, default: "" },
+    },
+  ],
 });
 
 const User = mongoose.model("User", userSchema);
@@ -142,15 +149,6 @@ ${user.objective && user.objective !== "" ? `
 ${escapeLatex(user.objective)}
 \\end{rSection}` : ""}
 
-${user.education && user.education.length > 0 ? `
-\\begin{rSection}{Education}
-${user.education.map((ed) => `
-\\textbf{${escapeLatex(ed.degree)}} \\\\
-${escapeLatex(ed.institution)} \\hfill ${escapeLatex(ed.year)} \\\\
-${ed.coursework && ed.coursework !== "" ? `Relevant Coursework: ${escapeLatex(ed.coursework)}\\\\` : ""}
-${ed.CGPA && ed.CGPA !== "" ? `CGPA: ${escapeLatex(ed.CGPA)}\\\\` : ""}`).join("\n")}
-\\end{rSection}` : ""}
-
 ${user.experience && user.experience.length > 0 ? `
 \\begin{rSection}{Experience}
 ${user.experience.map((exp) => `
@@ -161,6 +159,19 @@ ${exp.achievements && exp.achievements.length > 0 ? exp.achievements.map((achiev
 \\item ${escapeLatex(achievement)}`).join("\n") : ""}
 \\end{itemize}`).join("\n")}
 \\end{rSection}` : ""}
+
+
+${user.education && user.education.length > 0 ? `
+\\begin{rSection}{Education}
+${user.education.map((ed) => `
+\\textbf{${escapeLatex(ed.degree)}} \\hfill ${escapeLatex(ed.year)} \\\\
+${escapeLatex(ed.institution)}${
+  ed.CGPA && ed.CGPA !== "" ? ` \\hfill CGPA: ${escapeLatex(ed.CGPA)}` : ""
+}${
+  ed.coursework && ed.coursework !== "" ? `\\\\Relevant Coursework: ${escapeLatex(ed.coursework)}` : ""
+}`).join("\n")}
+\\end{rSection}` : ""}
+
 
 
 ${user.skills && user.skills.length > 0 ? `
@@ -193,6 +204,18 @@ ${user.activities.map((activity) => `
 \\end{itemize}
 \\end{rSection}` : ""}
 
+
+
+${user.certifications && user.certifications.length > 0 ? `
+\\begin{rSection}{Certifications}
+\\begin{itemize}
+${user.certifications.map((cert) => `
+\\item ${cert.link && cert.link !== "" ? `\\href{${escapeLatex(cert.link)}}{\\textbf{${escapeLatex(cert.name)}}}` : `\\textbf{${escapeLatex(cert.name)}}`}${
+  cert.validUntil && cert.validUntil !== "" ? ` \\hfill Valid Until: ${escapeLatex(cert.validUntil)}` : ""
+}`).join("\n")}
+\\end{itemize}
+\\end{rSection}` : ""}
+
 ${user.responsibilities && user.responsibilities.length > 0 ? `
 \\begin{rSection}{Position Of Responsibility}
 ${user.responsibilities.map((resp) => `
@@ -203,7 +226,6 @@ ${resp.bulletPoints.map((point) => `
 \\item ${escapeLatex(point)}`).join("\n")}
 \\end{itemize}`).join("\n")}
 \\end{rSection}` : ""}
-
 
 ${user.leadership && user.leadership.length > 0 ? `
 \\begin{rSection}{Leadership}

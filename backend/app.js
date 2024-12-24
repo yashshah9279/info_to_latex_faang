@@ -60,6 +60,15 @@ const userSchema = new mongoose.Schema({
     achievements: { type: [String], default: [] }, // Updated from 'details' to 'achievements'
   },
 ],
+
+responsibilities: [
+  {
+    position: { type: String, required: true }, // Responsibility title
+    organization:{ type: String, required: true }, // Responsibility organisation
+    dateRange: { type: String }, // Updated from 'duration' to 'dateRange'
+    bulletPoints: { type: [String], default: [] }, // Array of detailed descriptions
+  },
+],
   projects: [
     {
       title: { type: String, required: true },
@@ -183,6 +192,18 @@ ${user.activities.map((activity) => `
 \\item ${escapeLatex(activity)}`).join("\n")}
 \\end{itemize}
 \\end{rSection}` : ""}
+
+${user.responsibilities && user.responsibilities.length > 0 ? `
+\\begin{rSection}{Position Of Responsibility}
+${user.responsibilities.map((resp) => `
+\\textbf{${escapeLatex(resp.position)}}${resp.dateRange ? ` \\hfill ${escapeLatex(resp.dateRange)}` : ""} \\\\
+${escapeLatex(resp.organization)} \\\\
+\\begin{itemize}
+${resp.bulletPoints.map((point) => `
+\\item ${escapeLatex(point)}`).join("\n")}
+\\end{itemize}`).join("\n")}
+\\end{rSection}` : ""}
+
 
 ${user.leadership && user.leadership.length > 0 ? `
 \\begin{rSection}{Leadership}

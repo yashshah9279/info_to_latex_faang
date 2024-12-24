@@ -152,11 +152,11 @@ ${escapeLatex(user.objective)}
 ${user.experience && user.experience.length > 0 ? `
 \\begin{rSection}{Experience}
 ${user.experience.map((exp) => `
-\\textbf{${escapeLatex(exp.roleName)}} ${exp.dateRange && exp.dateRange !== "" ? `\\hfill ${escapeLatex(exp.dateRange)}` : ""} \\\\
-${escapeLatex(exp.companyName)} ${exp.location && exp.location !== "" ? `\\hfill \\textit{${escapeLatex(exp.location)}}` : ""} \\\\
+\\textbf{${escapeLatex(exp.roleName)}}${exp.dateRange ? ` \\hfill ${escapeLatex(exp.dateRange)}` : ""} \\\\
+${escapeLatex(exp.companyName)}${exp.location ? ` \\hfill \\textit{${escapeLatex(exp.location)}}` : ""} 
 \\begin{itemize}
-${exp.achievements && exp.achievements.length > 0 ? exp.achievements.map((achievement) => `
-\\item ${escapeLatex(achievement)}`).join("\n") : ""}
+${exp.achievements?.map((achievement) => `
+\\item ${escapeLatex(achievement)}`).join("\n") || ""}
 \\end{itemize}`).join("\n")}
 \\end{rSection}` : ""}
 
@@ -186,13 +186,14 @@ ${user.projects && user.projects.length > 0 ? `
 \\begin{rSection}{Projects}
 \\begin{itemize}
 ${user.projects.map((proj) => `
-\\item \\textbf{${escapeLatex(proj.title)}}${proj.link && proj.link !== "" ? ` \\href{${escapeLatex(proj.link)}}{(Link)}` : ""}
+\\item ${proj.link && proj.link !== "" ? `\\href{${escapeLatex(proj.link)}}{\\textbf{${escapeLatex(proj.title)}}}` : `\\textbf{${escapeLatex(proj.title)}}`}
 \\begin{itemize}
 ${proj.description.map((desc) => `
 \\item ${escapeLatex(desc)}`).join("\n")}
 \\end{itemize}`).join("\n")}
 \\end{itemize}
 \\end{rSection}` : ""}
+
 
 
 
@@ -220,7 +221,7 @@ ${user.responsibilities && user.responsibilities.length > 0 ? `
 \\begin{rSection}{Position Of Responsibility}
 ${user.responsibilities.map((resp) => `
 \\textbf{${escapeLatex(resp.position)}}${resp.dateRange ? ` \\hfill ${escapeLatex(resp.dateRange)}` : ""} \\\\
-${escapeLatex(resp.organization)} \\\\
+${escapeLatex(resp.organization)} 
 \\begin{itemize}
 ${resp.bulletPoints.map((point) => `
 \\item ${escapeLatex(point)}`).join("\n")}

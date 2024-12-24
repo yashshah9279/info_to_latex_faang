@@ -51,14 +51,15 @@ const userSchema = new mongoose.Schema({
       skills: { type: String, required: true }, // Comma-separated skills
     },
   ],
-  experience: [
-    {
-      roleName: { type: String, required: true },
-      companyName: { type: String, required: true },
-      duration: { type: String },
-      details: { type: [String], default: [] },
-    },
-  ],
+ experience: [
+  {
+    roleName: { type: String, required: true }, // Job title
+    companyName: { type: String, required: true }, // Company name
+    dateRange: { type: String }, // Updated from 'duration' to 'dateRange'
+    location: { type: String }, // Added for job location
+    achievements: { type: [String], default: [] }, // Updated from 'details' to 'achievements'
+  },
+],
   projects: [
     {
       title: { type: String, required: true },
@@ -144,13 +145,14 @@ ${ed.CGPA && ed.CGPA !== "" ? `CGPA: ${escapeLatex(ed.CGPA)}\\\\` : ""}`).join("
 ${user.experience && user.experience.length > 0 ? `
 \\begin{rSection}{Experience}
 ${user.experience.map((exp) => `
-\\textbf{${escapeLatex(exp.roleName)}} ${exp.duration && exp.duration !== "" ? `\\hfill ${escapeLatex(exp.duration)}` : ""} \\\\
-${escapeLatex(exp.companyName)} \\\\
+\\textbf{${escapeLatex(exp.roleName)}} ${exp.dateRange && exp.dateRange !== "" ? `\\hfill ${escapeLatex(exp.dateRange)}` : ""} \\\\
+${escapeLatex(exp.companyName)} ${exp.location && exp.location !== "" ? `\\hfill \\textit{${escapeLatex(exp.location)}}` : ""} \\\\
 \\begin{itemize}
-${exp.details && exp.details.length > 0 ? exp.details.map((detail) => `
-\\item ${escapeLatex(detail)}`).join("\n") : ""}
+${exp.achievements && exp.achievements.length > 0 ? exp.achievements.map((achievement) => `
+\\item ${escapeLatex(achievement)}`).join("\n") : ""}
 \\end{itemize}`).join("\n")}
 \\end{rSection}` : ""}
+
 
 ${user.skills && user.skills.length > 0 ? `
 \\begin{rSection}{Skills}
@@ -164,14 +166,14 @@ ${user.projects && user.projects.length > 0 ? `
 \\begin{rSection}{Projects}
 \\begin{itemize}
 ${user.projects.map((proj) => `
-\\item \\textbf{${escapeLatex(proj.title)}}
+\\item \\textbf{${escapeLatex(proj.title)}}${proj.link && proj.link !== "" ? ` \\href{${escapeLatex(proj.link)}}{(Link)}` : ""}
 \\begin{itemize}
 ${proj.description.map((desc) => `
 \\item ${escapeLatex(desc)}`).join("\n")}
-\\end{itemize}
-${proj.link && proj.link !== "" ? `\\\\ \\href{${escapeLatex(proj.link)}}{Project Link}` : ""}`).join("\n")}
+\\end{itemize}`).join("\n")}
 \\end{itemize}
 \\end{rSection}` : ""}
+
 
 
 ${user.activities && user.activities.length > 0 ? `

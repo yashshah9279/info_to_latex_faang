@@ -95,6 +95,41 @@ const App = () => {
     <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
       <h1>LaTeX Resume Builder</h1>
 
+      <div
+      style={{
+        border: '1px solid #ccc',
+        padding: '15px',
+        borderRadius: '8px',
+        backgroundColor: '#f9f9f9',
+        marginBottom: '20px',
+      }}
+    >
+      <h2>How to Use</h2>
+      <ol style={{ paddingLeft: '20px' }}>
+        <li>
+          <strong>Welcome!</strong> This website is your helper to convert your data into a LaTeX resume using three simple steps.
+        </li>
+        <li>
+          Download the <strong>resume.cls</strong> file using the button below. It contains basic formatting info. You can use your own
+          file, but ensure the name and section structure match this file.
+        </li>
+        <li>
+          Open Overleaf and create a new project. Add the <strong>resume.cls</strong> file and create a new <code>.tex</code> file.
+        </li>
+        <li>
+          Fill out the form below with your details, and click on <strong>Generate LaTeX</strong> to create your LaTeX code. To fetch
+          the code, click on <strong>Fetch LaTeX</strong>. The generated code will appear in the LaTeX Code box below. Copy and paste
+          it into your <code>.tex</code> file and click <strong>Compile</strong>.
+        </li>
+        <li>
+          <strong>Hurray!</strong> Your LaTeX resume is ready!
+        </li>
+      </ol>
+      <p style={{ fontStyle: 'italic', color: '#555' }}>
+        Note: If you update any of your info, make sure to click on <strong>Generate LaTeX</strong> before fetching the updated code.
+      </p>
+    </div>
+    
       {errorMessage && (
         <div
           style={{

@@ -126,10 +126,13 @@ const App = () => {
         </li>
       </ol>
       <p style={{ fontStyle: 'italic', color: '#555' }}>
-        Note: If you update any of your info, make sure to click on <strong>Generate LaTeX</strong> before fetching the updated code.
+        Notes: If you update any of your info, make sure to click on <strong>Generate LaTeX</strong> before fetching the updated code.
       </p>
+      <p style={{ fontStyle: 'italic', color: '#555' }}>
+        Notes: Of the default fields only First name, last name, phone and email are mandatory rest all are optional fill them if you wish to add it in your resume.If you add fields e.g Add Project,fill up the necessary details dont keep it completely empty else it will throw an error,if you dont need that click on remove button.
+             </p>
     </div>
-    
+
       {errorMessage && (
         <div
           style={{

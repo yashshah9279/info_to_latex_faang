@@ -87,11 +87,11 @@ const ExperienceSection = ({ experienceData, onUpdate }) => {
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
           />
 
-          <h4>Achievements</h4>
+          <h4>Highlights or Achievements in this role</h4>
           {experience.achievements.map((achievement, achIndex) => (
             <div key={achIndex} style={{ display: 'flex', marginBottom: '10px' }}>
               <textarea
-                placeholder="Achievement"
+                placeholder="Highlights or Achievements"
                 value={achievement}
                 onChange={(e) => handleAchievementChange(expIndex, achIndex, e.target.value)}
                 style={{ width: '100%', marginRight: '10px', padding: '5px' }}

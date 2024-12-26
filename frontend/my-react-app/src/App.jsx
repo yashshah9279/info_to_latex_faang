@@ -7,6 +7,8 @@ import ProjectsSection from './Projectcmp.jsx';
 import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
+import './App.css';
+
 
 const App = () => {
   const [firstName, setFirstName] = useState('');
@@ -197,6 +199,19 @@ const App = () => {
           fontFamily: 'monospace',
         }}
       ></textarea>
+         <footer
+      style={{
+        textAlign: 'center',
+        padding: '10px',
+        marginTop: '20px',
+        borderTop: '1px solid #ccc',
+        backgroundColor: '#f9f9f9',
+        fontSize: '14px',
+        color: '#555',
+      }}
+    >
+      Created with ❤️ by YD © 2024
+    </footer>
     </div>
   );
 };

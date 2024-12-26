@@ -7,6 +7,8 @@ import ProjectsSection from './Projectcmp.jsx';
 import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
+import './App.css';
+
 
 const App = () => {
   const [firstName, setFirstName] = useState('');

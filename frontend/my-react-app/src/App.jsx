@@ -43,7 +43,7 @@ const App = () => {
 
     setErrorMessage('');
     try {
-      const response = await axios.post('http://localhost:5000/users', {
+      const response = await axios.post('https://info-to-latex-faang.onrender.com/users', {
         firstName,
         lastName,
         phone,
@@ -74,7 +74,7 @@ const App = () => {
 
   const handleFetchLatex = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/generate-latex', {
+      const response = await axios.get('https://info-to-latex-faang.onrender.com/generate-latex', {
         responseType: 'text',
       });
       setLatexCode(response.data);
@@ -116,22 +116,22 @@ const App = () => {
           file, but ensure the name and section structure match this file.
         </li>
         <li>
-          Open Overleaf and create a new project. Add the <strong>resume.cls</strong> file and create a new <code>.tex</code> file.
+          Open Overleaf and create a new project. Add the <strong>resume.cls</strong> file.
         </li>
         <li>
           Fill out the form below with your details, and click on <strong>Generate LaTeX</strong> to create your LaTeX code. To fetch
           the code, click on <strong>Fetch LaTeX</strong>. The generated code will appear in the LaTeX Code box below. Copy and paste
-          it into your <code>.tex</code> file and click <strong>Compile</strong>.
+          it into your <code>main.tex</code> file and click <strong>Compile</strong>.
         </li>
         <li>
-          <strong>Hurray!</strong> Your LaTeX resume is ready!
+          <strong>Hurray!</strong> Your LaTeX resume is ready!,click and download you have your LaTex resume!.
         </li>
       </ol>
       <p style={{ fontStyle: 'italic', color: '#555' }}>
-        Notes: If you update any of your info, make sure to click on <strong>Generate LaTeX</strong> before fetching the updated code.
+        Notes 1: If you update any of your info, make sure to click on <strong>Generate LaTeX</strong> before fetching the updated code.
       </p>
       <p style={{ fontStyle: 'italic', color: '#555' }}>
-        Notes: Of the default fields only First name, last name, phone and email are mandatory rest all are optional fill them if you wish to add it in your resume.If you add fields e.g Add Project,fill up the necessary details dont keep it completely empty else it will throw an error,if you dont need that click on remove button.
+        Notes 2: Of the default fields only First name, last name, phone and email are mandatory rest all are optional fill them if you wish to add it in your resume.If you add fields e.g Add Project,fill up the necessary details dont keep it completely empty else it will throw an error,if you dont need that click on remove button.
              </p>
     </div>
 

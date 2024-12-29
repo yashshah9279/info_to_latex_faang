@@ -36,15 +36,16 @@ const userSchema = new mongoose.Schema({
   github: { type: String, default: "" },
   githubusrn: { type: String, default: "" },
   objective: { type: String, default: "" },
-  education: [
-    {
-      degree: { type: String, required: true },
-      institution: { type: String, required: true },
-      year: { type: String, required: true },
-      coursework: { type: String, default: "" },
-      CGPA: { type: String, default: "" },
-    },
-  ],
+education: [
+  {
+    degree: { type: String, required: true },
+    institution: { type: String, required: true },
+    year: { type: String, required: true },
+    coursework: { type: String, default: "" },
+    score: { type: String, default: "" }, // Combined field for both CGPA and percentage
+    scoreType: { type: String, enum: ["CGPA", "Percentage"], default: "CGPA" }, // Type of score
+  },
+],
   skills: [
     {
       category: { type: String, required: true },
@@ -166,7 +167,9 @@ ${user.education && user.education.length > 0 ? `
 ${user.education.map((ed) => `
 \\textbf{${escapeLatex(ed.degree)}} \\hfill ${escapeLatex(ed.year)} \\\\
 ${escapeLatex(ed.institution)}${
-  ed.CGPA && ed.CGPA !== "" ? ` \\hfill CGPA: ${escapeLatex(ed.CGPA)}` : ""
+  ed.score && ed.score !== "" 
+    ? ` \\hfill ${ed.scoreType === "CGPA" ? "CGPA" : "Percentage"}: ${escapeLatex(ed.score)}`
+    : ""
 }${
   ed.coursework && ed.coursework !== "" ? `\\\\Relevant Coursework: ${escapeLatex(ed.coursework)}` : ""
 }`).join("\n")}

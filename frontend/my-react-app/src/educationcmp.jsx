@@ -9,8 +9,8 @@ const EducationSection = ({ educationData, onUpdate }) => {
       institution: '',
       year: '',
       coursework: '',
-      CGPA: '',
-     
+      scoreType: 'CGPA', // Default to CGPA
+      score: '',
     };
     const updatedData = [...localEducationData, newEntry];
     setLocalEducationData(updatedData);
@@ -30,15 +30,14 @@ const EducationSection = ({ educationData, onUpdate }) => {
     onUpdate(updatedData);
   };
 
-
-
-
-
   return (
     <div>
       <h2>Education</h2>
       {localEducationData.map((entry, index) => (
-        <div key={index} style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
+        <div
+          key={index}
+          style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}
+        >
           <input
             type="text"
             placeholder="Degree"
@@ -66,15 +65,39 @@ const EducationSection = ({ educationData, onUpdate }) => {
             onChange={(e) => handleFieldChange(index, 'coursework', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
           />
+          <div style={{ marginBottom: '10px' }}>
+            <label style={{ marginRight: '10px' }}>
+              <input
+                type="radio"
+                name={`scoreType-${index}`}
+                value="CGPA"
+                checked={entry.scoreType === 'CGPA'}
+                onChange={(e) => handleFieldChange(index, 'scoreType', e.target.value)}
+              />
+              CGPA
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={`scoreType-${index}`}
+                value="Percentage"
+                checked={entry.scoreType === 'Percentage'}
+                onChange={(e) => handleFieldChange(index, 'scoreType', e.target.value)}
+              />
+              Percentage
+            </label>
+          </div>
           <input
             type="text"
-            placeholder="CGPA"
-            value={entry.CGPA}
-            onChange={(e) => handleFieldChange(index, 'CGPA', e.target.value)}
+            placeholder={entry.scoreType === 'CGPA' ? 'Enter CGPA' : 'Enter Percentage'}
+            value={entry.score}
+            onChange={(e) => handleFieldChange(index, 'score', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
           />
-          
-          <button onClick={() => handleRemoveEntry(index)} style={{ padding: '5px 10px', background: 'red', color: 'white' }}>
+          <button
+            onClick={() => handleRemoveEntry(index)}
+            style={{ padding: '5px 10px', background: 'red', color: 'white' }}
+          >
             Remove Entry
           </button>
         </div>

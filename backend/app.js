@@ -70,13 +70,21 @@ responsibilities: [
     bulletPoints: { type: [String], default: [] }, // Array of detailed descriptions
   },
 ],
-  projects: [
-    {
-      title: { type: String, required: true },
-      description: { type: [String], default: [''] }, // Array of strings for bullet points
-      link: { type: String, default: "" },
-    },
-  ],
+projects: [
+  {
+    title: { type: String, required: true },
+    description: { type: [String], default: [''] },
+    links: [
+      {
+        name: { type: String, default: "" }, // Placeholder for the name of the link
+        url: { type: String, default: "" }, // Placeholder for the actual link URL
+      },
+    ],
+    date: { type: String, default: "" }, // Optional string field for the date
+  },
+],
+
+
   activities: [String],
   leadership: [String],
   certifications: [
@@ -187,15 +195,24 @@ ${escapeLatex(skill.category)} & ${escapeLatex(skill.skills)} \\\\`).join("\n")}
 
 ${user.projects && user.projects.length > 0 ? `
 \\begin{rSection}{Projects}
-\\begin{itemize}
 ${user.projects.map((proj) => `
-\\item ${proj.link && proj.link !== "" ? `\\href{${escapeLatex(proj.link)}}{\\textbf{${escapeLatex(proj.title)}}}` : `\\textbf{${escapeLatex(proj.title)}}`}
+\\textbf{${escapeLatex(proj.title)}}${
+  proj.links && proj.links.length > 0
+    ? " " + proj.links
+        .filter((link) => link.url && link.url !== "")
+        .map((link) =>
+          `\\href{${escapeLatex(link.url)}}{${escapeLatex(link.name || "Link")}}`
+        )
+        .join(" | ")
+    : ""
+}${proj.date ? ` \\hfill ${escapeLatex(proj.date)}` : ""} 
 \\begin{itemize}
 ${proj.description.map((desc) => `
 \\item ${escapeLatex(desc)}`).join("\n")}
 \\end{itemize}`).join("\n")}
-\\end{itemize}
 \\end{rSection}` : ""}
+
+
 
 
 

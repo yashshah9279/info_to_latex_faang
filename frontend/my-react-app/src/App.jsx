@@ -8,7 +8,7 @@ import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
-//http://localhost:5000/users
+//https://info-to-latex-faang.onrender.com/users
 //donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
@@ -44,7 +44,7 @@ const App = () => {
 
     setErrorMessage('');
     try {
-      const response = await axios.post('http://localhost:5000/users', {
+      const response = await axios.post('https://info-to-latex-faang.onrender.com/users', {
         firstName,
         lastName,
         phone,
@@ -75,7 +75,7 @@ const App = () => {
 
   const handleFetchLatex = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/generate-latex', {
+      const response = await axios.get('https://info-to-latex-faang.onrender.com/generate-latex', {
         responseType: 'text',
       });
       setLatexCode(response.data);

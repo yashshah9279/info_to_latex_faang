@@ -9,6 +9,7 @@ import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
 //http://localhost:5000/users
+//donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
   const [firstName, setFirstName] = useState('');

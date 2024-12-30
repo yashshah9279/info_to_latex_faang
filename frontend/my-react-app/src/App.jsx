@@ -162,7 +162,7 @@ const App = () => {
           Open Overleaf and create a new project. Add the <strong>resume.cls</strong> file.
         </li>
         <li>
-          Fill out the form below with your details, and click on <strong>Generate LaTeX</strong> to create your LaTeX code. To fetch
+          Arrange order of sections by dragging them and then fill out the form below with your details, and click on <strong>Generate LaTeX</strong> to create your LaTeX code. To fetch
           the code, click on <strong>Fetch LaTeX</strong>. The generated code will appear in the LaTeX Code box below. Copy and paste
           it into your <code>main.tex</code> file and click <strong>Compile</strong>.
         </li>
@@ -220,9 +220,22 @@ const App = () => {
   <List
     values={items}
     onChange={({ oldIndex, newIndex }) => {
-      const updatedItems = arrayMove(items, oldIndex, newIndex);
-      setItems(updatedItems);
-    }}
+  console.log('Change detected:', oldIndex, newIndex);
+  const updatedItems = arrayMove(items, oldIndex, newIndex);
+  console.log('Updated items:', updatedItems);
+  setItems(updatedItems);
+
+  const newOrder = updatedItems.map(item => item.id);
+  console.log('New order:', newOrder);
+
+  axios.post('https://info-to-latex-faang.onrender.com/api/save-order', { order: newOrder })
+    .then(response => {
+      console.log('Order updated successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error updating order:', error);
+    });
+}}
     renderList={({ children, props }) => (
       <ul {...props} style={{ padding: 0, listStyle: 'none' }}>
         {children}
@@ -241,7 +254,6 @@ const App = () => {
           cursor: isDragged ? 'grabbing' : 'grab',
         }}
       >
-        <h3>{value.label}</h3>
         {value.component}
       </li>
     )}

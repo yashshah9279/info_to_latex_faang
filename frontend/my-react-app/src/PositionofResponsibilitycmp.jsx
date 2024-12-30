@@ -77,7 +77,7 @@ const ResponsibilitySection = ({ data, onUpdate }) => {
           />
           <input
             type="text"
-            placeholder="Date Range e.g. May,2024-July,2024"
+            placeholder="Date Range e.g. May 2024- July 2024"
             value={responsibility.dateRange}
             onChange={(e) => handleFieldChange(resIndex, 'dateRange', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}

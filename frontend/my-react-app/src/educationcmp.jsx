@@ -54,7 +54,7 @@ const EducationSection = ({ educationData, onUpdate }) => {
           />
           <input
             type="text"
-            placeholder="Year"
+            placeholder="Year e.g 2021-2025"
             value={entry.year}
             onChange={(e) => handleFieldChange(index, 'year', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}

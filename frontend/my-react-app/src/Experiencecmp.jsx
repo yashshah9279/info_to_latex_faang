@@ -74,7 +74,7 @@ const ExperienceSection = ({ experienceData, onUpdate }) => {
           />
           <input
             type="text"
-            placeholder="Date Range e.g. May,2024-July,2025"
+            placeholder="Date Range e.g. e.g May 2024 - July 2024"
             value={experience.dateRange}
             onChange={(e) => handleFieldChange(expIndex, 'dateRange', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import {List,arrayMove} from 'react-movable'
+
 import axios from 'axios';
 import CodingProfilesSection from './CodingProfilecmp.jsx';
 import EducationSection from './educationcmp.jsx';
@@ -9,7 +11,7 @@ import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
-//http://localhost:5000/users
+//https://info-to-latex-faang.onrender.com/users
 //donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
@@ -37,7 +39,46 @@ const App = () => {
   const [activities, setActivities] = useState([]);
   const [responsibilities, setResponsibilities] = useState([]);
   const [certifications, setCertifications] = useState([]); // New State for Certifications
+ // const [items,setItems]= useState(['Item1','Item2','Item3','Item4','Item5','Item6']);
+ const [items, setItems] = useState([
+  {
+    id: 'experience',
+    label: 'Experience',
+    component: <ExperienceSection experienceData={experience} onUpdate={setExperience} />,
+  },
+  {
+    id: 'education',
+    label: 'Education',
+    component: <EducationSection educationData={education} onUpdate={setEducation} />,
+  },
+  {
+    id: 'skills',
+    label: 'Skills',
+    component: <SkillsSection skillsData={skills} onUpdate={setSkills} />,
+  },
+  {
+    id: 'projects',
+    label: 'Projects',
+    component: <ProjectsSection projectsData={projects} onUpdate={setProjects} />,
+  },
+  {
+    id: 'activities',
+    label: 'Activities',
+    component: <GeneralBulletCmp bulletsData={activities} onUpdate={setActivities} />,
+  },
+  {
+    id: 'certifications',
+    label: 'Certifications',
+    component: <CertificationsSection certificationsData={certifications} onUpdate={setCertifications} />,
+  },
+  {
+    id: 'responsibilities',
+    label: 'Responsibilities',
+    component: <ResponsibilitySection data={responsibilities} onUpdate={setResponsibilities} />,
+  },
+]);
 
+  
   const handleGenerateLatex = async () => {
     if (!firstName || !lastName || !phone || !email) {
       setErrorMessage('Please fill in all required fields: First Name, Last Name, Phone, and Email.');
@@ -46,7 +87,7 @@ const App = () => {
 
     setErrorMessage('');
     try {
-      const response = await axios.post('http://localhost:5000/users', {
+      const response = await axios.post('https://info-to-latex-faang.onrender.com/users', {
         firstName,
         lastName,
         phone,
@@ -76,7 +117,7 @@ const App = () => {
 
   const handleFetchLatex = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/generate-latex', {
+      const response = await axios.get('https://info-to-latex-faang.onrender.com/generate-latex', {
         responseType: 'text',
       });
       setLatexCode(response.data);
@@ -175,13 +216,39 @@ const App = () => {
       </div>
 
       <textarea placeholder="Objective" value={objective} onChange={(e) => setObjective(e.target.value)} style={{ width: '100%', height: '50px', marginBottom: '10px' }}></textarea>
-      <ExperienceSection experienceData={experience} onUpdate={setExperience} />
-      <EducationSection educationData={education} onUpdate={setEducation} />
-      <SkillsSection skillsData={skills} onUpdate={setSkills} />
-      <ProjectsSection projectsData={projects} onUpdate={setProjects} />
-      <GeneralBulletCmp bulletsData={activities} onUpdate={setActivities} />
-      <CertificationsSection certificationsData={certifications} onUpdate={setCertifications} />
-      <ResponsibilitySection data={responsibilities} onUpdate={setResponsibilities} />
+      <div>
+  <List
+    values={items}
+    onChange={({ oldIndex, newIndex }) => {
+      const updatedItems = arrayMove(items, oldIndex, newIndex);
+      setItems(updatedItems);
+    }}
+    renderList={({ children, props }) => (
+      <ul {...props} style={{ padding: 0, listStyle: 'none' }}>
+        {children}
+      </ul>
+    )}
+    renderItem={({ value, props, isDragged }) => (
+      <li
+        {...props}
+        style={{
+          ...props.style,
+          padding: '10px',
+          border: '1px solid #ccc',
+          borderRadius: '5px',
+          marginBottom: '10px',
+          backgroundColor: isDragged ? '#e0e0e0' : 'white',
+          cursor: isDragged ? 'grabbing' : 'grab',
+        }}
+      >
+        <h3>{value.label}</h3>
+        {value.component}
+      </li>
+    )}
+  />
+</div>
+
+     
      
 
       <button onClick={handleGenerateLatex} style={{ padding: '10px 20px', marginRight: '10px' }}>

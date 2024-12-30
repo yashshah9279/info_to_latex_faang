@@ -31,8 +31,12 @@ const userSchema = new mongoose.Schema({
   linkedin: { type: String, default: "" },
   linkedinusrn: { type: String, default: "" },
   portfolio: { type: String, default: "" },
-  codingProfile: { type: String, default: "" },
-  codingProfileplatname: { type: String, default: "" },
+  codingProfiles: [
+    {
+      platform: { type: String, required: true }, // Name of the platform
+      link: { type: String, required: true }, // Profile link
+    },
+  ],
   github: { type: String, default: "" },
   githubusrn: { type: String, default: "" },
   objective: { type: String, default: "" },
@@ -144,12 +148,22 @@ app.get("/generate-latex", async (req, res) => {
 \\name{${escapeLatex(user.firstName)} ${escapeLatex(user.lastName)}}
 \\address{${escapeLatex(user.phone)}${user.address ? ` \\\\ ${escapeLatex(user.address)}` : ""}}
 \\address{\\href{mailto:${escapeLatex(user.email)}}{${escapeLatex(user.email)}}${
-      user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${escapeLatex(user.linkedinusrn || "LinkedIn Profile")}}` : ""
-    }${
-      user.github ? ` \\\\ \\href{${escapeLatex(user.github)}}{${escapeLatex(user.githubusrn || "GitHub Profile")}}` : ""
-    }${
-      user.portfolio ? ` \\\\ \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
-    }}
+  user.linkedin ? ` \\\\ \\href{${escapeLatex(user.linkedin)}}{${escapeLatex(user.linkedinusrn || "LinkedIn Profile")}}` : ""
+}${
+  user.github ? ` \\\\ \\href{${escapeLatex(user.github)}}{${escapeLatex(user.githubusrn || "GitHub Profile")}}` : ""
+}${
+  user.portfolio ? ` \\\\ \\href{${escapeLatex(user.portfolio)}}{Portfolio}` : ""
+}${
+  user.codingProfiles && user.codingProfiles.length > 0
+    ? user.codingProfiles
+        .map(
+          (profile) =>
+            ` \\\\ \\href{${escapeLatex(profile.link)}}{${escapeLatex(profile.platform)}}`
+        )
+        .join("")
+    : ""
+}}
+
 
 \\begin{document}
 

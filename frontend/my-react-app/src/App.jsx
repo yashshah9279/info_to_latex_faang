@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import CodingProfilesSection from './CodingProfilecmp.jsx';
 import EducationSection from './educationcmp.jsx';
 import SkillsSection from './skillscmp.jsx';
 import ExperienceSection from './Experiencecmp.jsx';
@@ -8,7 +9,7 @@ import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
-//https://info-to-latex-faang.onrender.com/users
+//http://localhost:5000/users
 //donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
@@ -20,8 +21,9 @@ const App = () => {
   const [linkedin, setLinkedin] = useState('');
   const [linkedinusrn, setLinkedinusrn] = useState('');
   const [portfolio, setPortfolio] = useState('');
-  const [codingProfile, setCodingProfile] = useState('');
-  const [codingProfileplatname, setCodingProfileplatname] = useState('');
+  // const [codingProfile, setCodingProfile] = useState('');
+  // const [codingProfileplatname, setCodingProfileplatname] = useState('');
+  const [codingProfiles, setCodingProfiles] = useState([]);
   const [github, setGithub] = useState('');
   const [githubusrn, setGithubusrn] = useState('');
   const [objective, setObjective] = useState('');
@@ -44,7 +46,7 @@ const App = () => {
 
     setErrorMessage('');
     try {
-      const response = await axios.post('https://info-to-latex-faang.onrender.com/users', {
+      const response = await axios.post('http://localhost:5000/users', {
         firstName,
         lastName,
         phone,
@@ -53,8 +55,7 @@ const App = () => {
         linkedin,
         linkedinusrn,
         portfolio,
-        codingProfile,
-        codingProfileplatname,
+        codingProfiles,
         github,
         githubusrn,
         objective,
@@ -75,7 +76,7 @@ const App = () => {
 
   const handleFetchLatex = async () => {
     try {
-      const response = await axios.get('https://info-to-latex-faang.onrender.com/generate-latex', {
+      const response = await axios.get('http://localhost:5000/generate-latex', {
         responseType: 'text',
       });
       setLatexCode(response.data);
@@ -158,12 +159,18 @@ const App = () => {
         <input type="text" placeholder="Phone (Required)" value={phone} onChange={(e) => setPhone(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
         <input type="email" placeholder="Email (Required)" value={email} onChange={(e) => setEmail(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
         <input type="text" placeholder="City, State" value={address} onChange={(e) => setAddress(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
-        <input type="text" placeholder="LinkedIn Username" value={linkedinusrn} onChange={(e) => setLinkedinusrn(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
+        <input type="text" placeholder="LinkedIn Username /Linkdein" value={linkedinusrn} onChange={(e) => setLinkedinusrn(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
         <input type="text" placeholder="LinkedIn Link" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
         <input type="text" placeholder="Portfolio Link" value={portfolio} onChange={(e) => setPortfolio(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
-        <input type="text" placeholder="Coding Profile username" value={codingProfileplatname} onChange={(e) => setCodingProfileplatname(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
-        <input type="text" placeholder="Coding Profile Link" value={codingProfile} onChange={(e) => setCodingProfile(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
-        <input type="text" placeholder="GitHub Username" value={githubusrn} onChange={(e) => setGithubusrn(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
+        <CodingProfilesSection
+        codingProfiles={codingProfiles}
+        onAdd={() => setCodingProfiles([...codingProfiles, { platform: '', link: '' }])}
+        onRemove={(index) =>
+          setCodingProfiles(codingProfiles.filter((_, i) => i !== index))
+        }
+        onUpdate={(updatedProfiles) => setCodingProfiles(updatedProfiles)}
+      />
+        <input type="text" placeholder="GitHub Username / Github" value={githubusrn} onChange={(e) => setGithubusrn(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
         <input type="text" placeholder="GitHub Link" value={github} onChange={(e) => setGithub(e.target.value)} style={{ marginRight: '10px', padding: '5px' }} />
       </div>
 

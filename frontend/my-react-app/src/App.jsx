@@ -11,7 +11,7 @@ import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
-//https://info-to-latex-faang.onrender.com
+//http://localhost:5000
 //donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
@@ -59,7 +59,7 @@ const App = () => {
 
     setErrorMessage('');
     try {
-      const response = await axios.post('https://info-to-latex-faang.onrender.com/users', {
+      const response = await axios.post('http://localhost:5000/users', {
         firstName,
         lastName,
         phone,
@@ -89,7 +89,7 @@ const App = () => {
 
   const handleFetchLatex = async () => {
     try {
-      const response = await axios.get('https://info-to-latex-faang.onrender.com/generate-latex', {
+      const response = await axios.get('http://localhost:5000/generate-latex', {
         responseType: 'text',
       });
       setLatexCode(response.data);
@@ -209,7 +209,7 @@ const App = () => {
           // Save the new order to the backend
           const newOrder = updatedItems.map((item) => item.id);
           axios
-            .post('https://info-to-latex-faang.onrender.com/api/save-order', { order: newOrder })
+            .post('http://localhost:5000/api/save-order', { order: newOrder })
             .then((response) => {
               console.log('Order updated successfully:', response.data);
             })

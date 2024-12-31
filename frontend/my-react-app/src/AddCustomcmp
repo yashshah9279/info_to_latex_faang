@@ -1,0 +1,134 @@
+import React, { useState } from 'react';
+
+const AddCustomSection = ({ sectionData, onUpdate }) => {
+  const [localSectionData, setLocalSectionData] = useState(sectionData);
+
+  const handleAddSection = () => {
+    const newSection = {
+      title: '',
+      subtitle: '',
+      dateRange: '',
+      location: '',
+      achievements: [''],
+    };
+    const updatedData = [...localSectionData, newSection];
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  const handleRemoveSection = (index) => {
+    const updatedData = localSectionData.filter((_, i) => i !== index);
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  const handleFieldChange = (index, field, value) => {
+    const updatedData = [...localSectionData];
+    updatedData[index][field] = value;
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  const handleAchievementChange = (secIndex, achIndex, value) => {
+    const updatedData = [...localSectionData];
+    updatedData[secIndex].achievements[achIndex] = value;
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  const handleAddAchievement = (secIndex) => {
+    const updatedData = [...localSectionData];
+    updatedData[secIndex].achievements.push('');
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  const handleRemoveAchievement = (secIndex, achIndex) => {
+    const updatedData = [...localSectionData];
+    updatedData[secIndex].achievements.splice(achIndex, 1);
+    setLocalSectionData(updatedData);
+    onUpdate(updatedData);
+  };
+
+  return (
+    <div>
+      <h2>Add Custom Section</h2>
+      {localSectionData.map((section, secIndex) => (
+        <div
+          key={secIndex}
+          style={{ marginBottom: '20px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}
+        >
+          <input
+            type="text"
+            placeholder="Title"
+            value={section.title}
+            onChange={(e) => handleFieldChange(secIndex, 'title', e.target.value)}
+            style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
+          />
+          <input
+            type="text"
+            placeholder="Subtitle"
+            value={section.subtitle}
+            onChange={(e) => handleFieldChange(secIndex, 'subtitle', e.target.value)}
+            style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
+          />
+          <input
+            type="text"
+            placeholder="Date Range e.g. May 2024 - July 2024"
+            value={section.dateRange}
+            onChange={(e) => handleFieldChange(secIndex, 'dateRange', e.target.value)}
+            style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
+          />
+          <input
+            type="text"
+            placeholder="Location"
+            value={section.location}
+            onChange={(e) => handleFieldChange(secIndex, 'location', e.target.value)}
+            style={{ width: '100%', marginBottom: '10px', padding: '5px' }}
+          />
+
+          <h4>Achievements</h4>
+          {section.achievements.map((achievement, achIndex) => (
+            <div key={achIndex} style={{ display: 'flex', marginBottom: '10px' }}>
+              <textarea
+                placeholder="Achievement"
+                value={achievement}
+                onChange={(e) => handleAchievementChange(secIndex, achIndex, e.target.value)}
+                style={{ width: '100%', marginRight: '10px', padding: '5px' }}
+              />
+              <button
+                onClick={() => handleRemoveAchievement(secIndex, achIndex)}
+                style={{ padding: '5px 10px', background: 'red', color: 'white' }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() => handleAddAchievement(secIndex)}
+            style={{ padding: '5px 10px', marginTop: '10px' }}
+          >
+            Add Achievement
+          </button>
+
+          <button
+            onClick={() => handleRemoveSection(secIndex)}
+            style={{
+              padding: '5px 10px',
+              marginTop: '20px',
+              background: 'red',
+              color: 'white',
+            }}
+          >
+            Remove Section
+          </button>
+        </div>
+      ))}
+      <button onClick={handleAddSection} style={{ padding: '10px 20px', marginTop: '20px' }}>
+        Add Section
+      </button>
+    </div>
+  );
+};
+
+export default AddCustomSection;

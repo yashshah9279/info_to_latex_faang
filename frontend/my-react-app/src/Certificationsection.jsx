@@ -45,7 +45,7 @@ const CertificationsSection = ({ certificationsData, onUpdate }) => {
           />
           <input
             type="text"
-            placeholder="Valid Until (optional)"
+            placeholder="Valid Until (optional) e.g May 2024"
             value={certification.validUntil}
             onChange={(e) => handleFieldChange(index, 'validUntil', e.target.value)}
             style={{ width: '100%', marginBottom: '10px', padding: '5px' }}

@@ -86,7 +86,7 @@ const ProjectsSection = ({ projectsData, onUpdate }) => {
           />
           <input
             type="text"
-            placeholder="Date (Optional)"
+            placeholder="Date (Optional) e.g May 2024"
             value={project.date}
             onChange={(e) => handleFieldChange(index, "date", e.target.value)}
             style={{ width: "100%", marginBottom: "10px", padding: "5px" }}

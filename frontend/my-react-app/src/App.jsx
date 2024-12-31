@@ -11,7 +11,7 @@ import GeneralBulletCmp from './generalbulletcmp.jsx';
 import ResponsibilitySection from './PositionofResponsibilitycmp.jsx';
 import CertificationsSection from './Certificationsection.jsx';
 import './App.css';
-//https://info-to-latex-faang.onrender.com/users
+//https://info-to-latex-faang.onrender.com
 //donot forget to change backend url to above and also make render updated using latest commit
 
 const App = () => {
@@ -41,41 +41,13 @@ const App = () => {
   const [certifications, setCertifications] = useState([]); // New State for Certifications
  // const [items,setItems]= useState(['Item1','Item2','Item3','Item4','Item5','Item6']);
  const [items, setItems] = useState([
-  {
-    id: 'experience',
-    label: 'Experience',
-    component: <ExperienceSection experienceData={experience} onUpdate={setExperience} />,
-  },
-  {
-    id: 'education',
-    label: 'Education',
-    component: <EducationSection educationData={education} onUpdate={setEducation} />,
-  },
-  {
-    id: 'skills',
-    label: 'Skills',
-    component: <SkillsSection skillsData={skills} onUpdate={setSkills} />,
-  },
-  {
-    id: 'projects',
-    label: 'Projects',
-    component: <ProjectsSection projectsData={projects} onUpdate={setProjects} />,
-  },
-  {
-    id: 'activities',
-    label: 'Activities',
-    component: <GeneralBulletCmp bulletsData={activities} onUpdate={setActivities} />,
-  },
-  {
-    id: 'certifications',
-    label: 'Certifications',
-    component: <CertificationsSection certificationsData={certifications} onUpdate={setCertifications} />,
-  },
-  {
-    id: 'responsibilities',
-    label: 'Responsibilities',
-    component: <ResponsibilitySection data={responsibilities} onUpdate={setResponsibilities} />,
-  },
+  { id: 'experience', label: 'Experience', dataKey: 'experience' },
+  { id: 'education', label: 'Education', dataKey: 'education' },
+  { id: 'skills', label: 'Skills', dataKey: 'skills' },
+  { id: 'projects', label: 'Projects', dataKey: 'projects' },
+  { id: 'activities', label: 'Activities', dataKey: 'activities' },
+  { id: 'certifications', label: 'Certifications', dataKey: 'certifications' },
+  { id: 'responsibilities', label: 'Responsibilities', dataKey: 'responsibilities' },
 ]);
 
   
@@ -134,6 +106,16 @@ const App = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const dataMap = {
+    experience: { data: experience, onUpdate: setExperience },
+    education: { data: education, onUpdate: setEducation },
+    skills: { data: skills, onUpdate: setSkills },
+    projects: { data: projects, onUpdate: setProjects },
+    activities: { data: activities, onUpdate: setActivities },
+    certifications: { data: certifications, onUpdate: setCertifications },
+    responsibilities: { data: responsibilities, onUpdate: setResponsibilities },
   };
 
   return (
@@ -217,48 +199,92 @@ const App = () => {
 
       <textarea placeholder="Objective" value={objective} onChange={(e) => setObjective(e.target.value)} style={{ width: '100%', height: '50px', marginBottom: '10px' }}></textarea>
       <div>
-  <List
-    values={items}
-    onChange={({ oldIndex, newIndex }) => {
-  console.log('Change detected:', oldIndex, newIndex);
-  const updatedItems = arrayMove(items, oldIndex, newIndex);
-  console.log('Updated items:', updatedItems);
-  setItems(updatedItems);
+      <List
+        values={items}
+        onChange={({ oldIndex, newIndex }) => {
+          // Update item order
+          const updatedItems = arrayMove(items, oldIndex, newIndex);
+          setItems(updatedItems);
 
-  const newOrder = updatedItems.map(item => item.id);
-  console.log('New order:', newOrder);
-
-  axios.post('https://info-to-latex-faang.onrender.com/api/save-order', { order: newOrder })
-    .then(response => {
-      console.log('Order updated successfully:', response.data);
-    })
-    .catch(error => {
-      console.error('Error updating order:', error);
-    });
-}}
-    renderList={({ children, props }) => (
-      <ul {...props} style={{ padding: 0, listStyle: 'none' }}>
-        {children}
-      </ul>
-    )}
-    renderItem={({ value, props, isDragged }) => (
-      <li
-        {...props}
-        style={{
-          ...props.style,
-          padding: '10px',
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          marginBottom: '10px',
-          backgroundColor: isDragged ? '#e0e0e0' : 'white',
-          cursor: isDragged ? 'grabbing' : 'grab',
+          // Save the new order to the backend
+          const newOrder = updatedItems.map((item) => item.id);
+          axios
+            .post('https://info-to-latex-faang.onrender.com/api/save-order', { order: newOrder })
+            .then((response) => {
+              console.log('Order updated successfully:', response.data);
+            })
+            .catch((error) => {
+              console.error('Error updating order:', error);
+            });
         }}
-      >
-        {value.component}
-      </li>
-    )}
-  />
-</div>
+        renderList={({ children, props }) => (
+          <ul {...props} style={{ padding: 0, listStyle: 'none' }}>
+            {children}
+          </ul>
+        )}
+        renderItem={({ value, props, isDragged }) => {
+          const { key, ...restProps } = props; // Destructure and explicitly pass key
+          const section = dataMap[value.dataKey]; // Get data and onUpdate for this item
+
+          return (
+            <li
+              key={key}
+              {...restProps}
+              style={{
+                ...restProps.style,
+                padding: '10px',
+                border: '1px solid #ccc',
+                borderRadius: '5px',
+                marginBottom: '10px',
+                backgroundColor: isDragged ? '#e0e0e0' : 'white',
+                cursor: isDragged ? 'grabbing' : 'grab',
+              }}
+            >
+              {/* Dynamically render the component with appropriate data */}
+              {value.id === 'experience' && (
+                <ExperienceSection
+                  experienceData={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+              {value.id === 'education' && (
+                <EducationSection
+                  educationData={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+              {value.id === 'skills' && (
+                <SkillsSection skillsData={section.data} onUpdate={section.onUpdate} />
+              )}
+              {value.id === 'projects' && (
+                <ProjectsSection
+                  projectsData={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+              {value.id === 'activities' && (
+                <GeneralBulletCmp
+                  bulletsData={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+              {value.id === 'certifications' && (
+                <CertificationsSection
+                  certificationsData={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+              {value.id === 'responsibilities' && (
+                <ResponsibilitySection
+                  data={section.data}
+                  onUpdate={section.onUpdate}
+                />
+              )}
+            </li>
+          );
+        }}
+      />
+    </div>
 
      
      
